@@ -1,4 +1,11 @@
-# VCFtoTree
+# VCFtoTree v2.0.0
+Updates:
+- parse chosen populations.
+
+
+
+
+# VCFtoTree v1.0.0
 Build phylogeny from [1000 Genomes] Phase 3 VCF file for 2504 individuals, also including ancient ([Neanderthal], [Denisovan]) and primate genomes.
 [1000 Genomes]:http://www.1000genomes.org
 [Neanderthal]:http://www.eva.mpg.de/neandertal/index.html
