@@ -15,6 +15,7 @@ class Frames:
 #Used to pass users selected species and region to the shell script
 
     speciesList = []
+    populationList = []
     cnum = 0
     rStart = 0
     rEnd = 0
@@ -27,10 +28,11 @@ class Frames:
 #Frames used in main window
 
         speciesSelection = Frame(master)
+        populationSelection = Frame(master)
         specFrame = Frame(master)
         self.confPage = Frame(master)
         self.buildPage = Frame(master)
-        self.frameList = [speciesSelection, specFrame, self.confPage, self.buildPage]
+        self.frameList = [speciesSelection, populationSelection, specFrame, self.confPage, self.buildPage]
         self.frameCounter = 0
         self.finishCount = 0
 
@@ -40,7 +42,7 @@ class Frames:
         #Creates buttons and label
 
         self.fgLabel = Label(master, text = "VCFtoTree", font = ('Times', 50), fg = 'brown', bg = 'papaya whip')
-        self.vLabel = Label(master, text = "V 1.0.0", font = ('Times', 20), fg = 'brown', bg = 'papaya whip')
+        self.vLabel = Label(master, text = "V 2.0.0", font = ('Times', 20), fg = 'brown', bg = 'papaya whip')
         self.Begin = Button(master, text = "Begin", font = ('Times', 20), fg = 'brown', command = self.begin, bg = 'papaya whip')
 
         #Places buttons and label
@@ -67,6 +69,45 @@ class Frames:
         self.Next = Button(speciesSelection, text = "Next", font = ('Times', 12), fg = 'brown', command = self.oneSet, borderwidth = 4)
         self.Next.pack(side = RIGHT, pady = 45)
 
+#populationSelection Frame
+
+        Label(populationSelection, text = "\n\n\nPlease select the populations you \n would like to compare  \n", font = ('Times', 20), fg = 'brown').pack(side = TOP)
+
+        self.DropDown2 = Listbox(populationSelection, height = 5, width = 25, selectmode = MULTIPLE, font = ('Times', 15), activestyle = 'none')
+        self.DropDown2.pack(side = TOP)
+        self.DropDown2.yview()
+
+        self.DropDown2.insert(1, 'ALL')
+        self.DropDown2.insert(2, 'ACB')
+        self.DropDown2.insert(3, 'CHS')
+        self.DropDown2.insert(4, 'GIH')
+        self.DropDown2.insert(5, 'LWK')
+        self.DropDown2.insert(6, 'ASW')
+        self.DropDown2.insert(7, 'CLM')
+        self.DropDown2.insert(8, 'GWD')
+        self.DropDown2.insert(9, 'MSL')
+        self.DropDown2.insert(10, 'PUR')
+        self.DropDown2.insert(11, 'BEB')
+        self.DropDown2.insert(12, 'MXL')
+        self.DropDown2.insert(13, 'STU')
+        self.DropDown2.insert(14, 'CDX')
+        self.DropDown2.insert(15, 'ESN')
+        self.DropDown2.insert(16, 'ITU')
+        self.DropDown2.insert(17, 'TSI')
+        self.DropDown2.insert(18, 'CEU')
+        self.DropDown2.insert(19, 'FIN')
+        self.DropDown2.insert(20, 'JPT')
+        self.DropDown2.insert(21, 'PEL')
+        self.DropDown2.insert(22, 'YRI')
+        self.DropDown2.insert(23, 'CHB')
+        self.DropDown2.insert(24, 'GBR')
+        self.DropDown2.insert(25, 'KHV')
+        self.DropDown2.insert(26, 'PJL')
+
+        self.Next = Button(populationSelection, text = "Next", font = ('Times', 12), fg = 'brown', command = self.oneSet, borderwidth = 4)
+        self.Previous = Button(populationSelection, text = "Back", font = ('Times', 12), fg = 'brown', command = self.previousFrame, borderwidth = 4)
+        self.Next.pack(side = RIGHT, pady = 45, padx = 100)
+        self.Previous.pack(side = LEFT, pady = 45, padx = 100)
 
 #specsFrame
 
@@ -116,12 +157,22 @@ class Frames:
             if len(self.speciesList) > 0:
                 self.speciesList2 = ','.join(self.speciesList)
 
-
             else:
                 self.DropDown.configure(bg = 'tomato')
                 return
 
         elif self.frameCounter == 1:
+
+            self.populationList = [self.DropDown2.get(selected) for selected in self.DropDown2.curselection()]
+            if len(self.populationList) > 0:
+                self.populationList2 = ','.join(self.populationList)
+
+            else:
+                self.DropDown2.configure(bg = 'tomato')
+                return
+
+
+        elif self.frameCounter == 2:
             try:
 
                 cnum = int(self.c.get())
@@ -135,7 +186,7 @@ class Frames:
                 #To produce only one set of widgets
                 if(self.counter == 0):
                     #Conf Page Defined here to access updated output values
-                    Label(self.confPage, text = "\n Building tree using chromosome %d \n on region %d to %d for species \n %s" % (self.outputValues[0], self.outputValues[1], self.outputValues[2], self.speciesList2), font = ('Times', 15), fg = 'brown').pack(side = TOP)
+                    Label(self.confPage, text = "\n Building tree using chromosome %d \n on region %d to %d for species \n %s \n and for human population: \n %s" % (self.outputValues[0], self.outputValues[1], self.outputValues[2], self.speciesList2, self.populationList2), font = ('Times', 15), fg = 'brown').pack(side = TOP)
                     Label(self.confPage, text = "\n\n\n If this is correct, click confirm below.\n\n", font = ('Times', 12), fg = 'brown').pack(side = TOP)
 
 
@@ -259,7 +310,7 @@ class Frames:
 
         if self.finishCount == 1:
             os.system('chmod +x Code/buildTree_1click_erica.sh')
-            os.system('Code/buildTree_1click_erica.sh %s %s %s %s &' % (self.outputValues[0], self.outputValues[1], self.outputValues[2], self.speciesList2))
+            os.system('Code/buildTree_1click_erica.sh %s %s %s %s %s &' % (self.outputValues[0], self.outputValues[1], self.outputValues[2], self.speciesList2, self.populationList2))
             self.completedTree()
             self.finishCount += 1
 
@@ -319,11 +370,11 @@ class Frames:
 #Class Definition End
 
 
-#Makes sure code is operating inside of VCFtoTree_1.0.0 folder
+#Makes sure code is operating inside of VCFtoTree_2.0.0 folder
 #ERICA: I can't call os.system() on windows, so I'm not sure if this is going to work, but I just copied it from the last code we did on
 global path
 #TYPO
-path = os.popen('find ~ -iname "VCFtoTree_1.0.0"').read()
+path = os.popen('find ~ -iname "VCFtoTree_2.0.0"').read()
 print 'the path is ' + path
 os.system('cd ' + path)
 os.system('pwd')
