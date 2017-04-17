@@ -12,9 +12,11 @@ end=$3
 ## Takes in string of selected species returned from python GUI
 specieslist=$4
 
+## Takes in string of selected populations returned from python GUI
+populationlist=$5
 
 
-echo "The region of your interest: chr"$chr":"$start"-"$end". Have fun!"
+echo "The region of your interest: chr"$chr":"$start"-"$end" for "$populationlist" population(s). Have fun!"
 mkdir ../../../VCFtoTree_Output
 
 ##Human Condition Met
@@ -31,7 +33,7 @@ gunzip -c chr$chr.fa.gz > chr$chr.fa
 
 ref=REF_chr$chr.START$start.END$end.fa
 
-python Code/vcf2fasta_erica.py $vcffile $ref $start $end ALI_1000HG.fa log.txt
+python Code/vcf2fasta_erica.py $vcffile $ref $start $end $populationlist ALI_1000HG.fa log.txt
 
 ##If array only contains human
 if [ $specieslist -eq 'Human' ];
