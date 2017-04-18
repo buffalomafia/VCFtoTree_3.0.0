@@ -5,6 +5,10 @@ Updates:
 
 [Vindija]:http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/
 
+#### APP download site:
+https://www.dropbox.com/sh/sewjxmh9207fp89/AAASfUGqMBtd2_HO3CR7XA3ha?dl=0
+
+
 
 
 # VCFtoTree v1.0.0
