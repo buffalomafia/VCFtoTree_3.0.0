@@ -1,7 +1,8 @@
 # VCFtoTree v2.0.0
 Updates:
 - parse chosen populations.
-
+- Add the new Neanderthal [Vindija] to the GUI. 
+[Vindija]:http://cdna.eva.mpg.de/neandertal/Vindija/VCF/Vindija33.19/
 
 
 
