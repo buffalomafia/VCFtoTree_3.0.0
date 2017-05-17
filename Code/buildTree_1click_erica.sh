@@ -109,7 +109,7 @@ else
 	fi
 
 ##If RM in array
-	if [[ $specieslist == *"Rhesus macaque"* ]]
+	if [[ $specieslist == *"Rhesus-macaque"* ]]
 	then
 		# getting Rhesus(RheMac3) reference, mapped to hg19
 		/usr/local/bin/wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/vsRheMac3/axtNet/chr$chr.hg19.rheMac3.net.axt.gz
@@ -139,8 +139,8 @@ else
 	Code/raxmlHPC-PTHREADS-SSE3 -T 2 -n YourRegion -s ALI_final.phy -mGTRGAMMA -p 235 -N 2
 
 	mv RAxML_bestTree.YourRegion RAxML_bestTree.YourRegion.newick
-    mv Indels_* ../../../VCFtoTree_Output/
-    mv log.txt ../../../VCFtoTree_Output/
+    	mv Indels_* ../../../VCFtoTree_Output/
+    	mv log.txt ../../../VCFtoTree_Output/
 	mv RAxML_* ../../../VCFtoTree_Output/
 	mv AL* ../../../VCFtoTree_Output/
 	mv error* ../../../VCFtoTree_Output/
