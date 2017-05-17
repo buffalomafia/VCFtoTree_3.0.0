@@ -65,7 +65,7 @@ class Frames:
         self.DropDown.insert(3, 'Vindija')
         self.DropDown.insert(4, 'Denisova')
         self.DropDown.insert(5, 'Chimp')
-        self.DropDown.insert(6, 'Rhesus macaque')
+        self.DropDown.insert(6, 'Rhesus-macaque')
 
         self.Next = Button(speciesSelection, text = "Next", font = ('Times', 12), fg = 'brown', command = self.oneSet, borderwidth = 4)
         self.Next.pack(side = RIGHT, pady = 45)
@@ -165,7 +165,7 @@ class Frames:
 
         elif self.frameCounter == 1:
 
-            self.populationList = [self.DropDown2.get(selected) for selected in self.DropDown2.curselection()]
+            self.populationList = [self.DropDown2.get(selected2) for selected2 in self.DropDown2.curselection()]
             if len(self.populationList) > 0:
                 self.populationList2 = ','.join(self.populationList)
 
