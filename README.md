@@ -2,7 +2,7 @@
 Updates:
 - It can now be applied to other species besides human.
 - In human section, you can also add in your customized vcf files, and you can specify the number of individuals in your vcf file.
-- Users can choose whether to build the tree or not, also to build the tree using either [FastTree] or RAxML. (To note that, the program compile the FastTree with **-DUSE_DOUBLE** by default, lifting the hard-coded limit on branch length precision. Please see detail in this [blog].)
+- Users can choose whether to build the tree or not, also to build the tree using either [FastTree] or RAxML. (To note that, the program compile the FastTree with ```unix-DUSE_DOUBLE``` by default, lifting the hard-coded limit on branch length precision. Please see detail in this [blog].)
 
 [FastTree]:http://www.microbesonline.org/fasttree/
 [blog]:http://darlinglab.org/blog/2015/03/23/not-so-fast-fasttree.html/
