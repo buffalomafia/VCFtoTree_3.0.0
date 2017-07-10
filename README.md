@@ -5,7 +5,7 @@ Updates:
 - Users can choose whether to build the tree or not, also to build the tree using either [FastTree] or RAxML. (To note that, VCFtoTree v3.0.0 compiles the FastTree with ```-DUSE_DOUBLE``` by default, lifting the hard-coded limit on branch length precision. Please see detail in this [blog].)
 
 [FastTree]:http://www.microbesonline.org/fasttree/
-[blog]:http://darlinglab.org/blog/2015/03/23/not-so-fast-fasttree.html/
+[blog]:http://darlinglab.org/blog/2015/03/23/not-so-fast-fasttree.html
 
 
 
