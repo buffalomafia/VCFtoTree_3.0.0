@@ -23,7 +23,6 @@ num=$6
 
 ## Do you want to build the tree using raxML?
 raxML=$7
-
 ## Do you want to build the tree using fastTree?
 fastTree=$8
 
@@ -70,19 +69,17 @@ echo "vcftofasta has run."
 
 ## Tree building
 
-## TO BE CHANGED ACCORDING TO THE FINAL GUI
-
 ## If use FastTree
 ## If the user need to compile it:
-if [ fastTree -eq 1 ]
+if [ $fastTree -eq 1 ]
 then
     gcc -DUSE_DOUBLE -O3 -finline-functions -funroll-loops -Wall -o FastTree FastTree.c -lm
     chmod +x Code/FastTree
-    Code/FastTree -gtr -gamma -nt ALI_otherAnimals.fa > ALI_otherAnimals.newick &
+    Code/FastTree -gtr -gamma -nt ALI_otherAnimals.fa > FastTree_ALI_otherAnimals.newick &
     wait
 fi
 
-if [ raxML -eq 1 ]
+if [ $raxML -eq 1 ]
 then
     ## If use RAxML
     python Code/fas2phy.py ALI_otherAnimals.fa ALI_otherAnimals.phy
