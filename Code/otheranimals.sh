@@ -4,7 +4,7 @@
 ## load/download the vcf file specified by the user
 ## then build the alignment, or further build the tree
 
-## Usage: ./otheranimals.sh refaddress vcfaddress chr start end num treebuild
+## Usage: ./otheranimals.sh refaddress vcfaddress chr start end num raxML fastTree
 
 
 ## address for the reference sequence,  in XX.fa.gz
@@ -21,10 +21,16 @@ end=$5
 ## How many species do you have?
 num=$6
 
-## Do you want to build the tree?
-treebuild=$7
+## Do you want to build the tree using raxML?
+raxML=$7
+
+## Do you want to build the tree using fastTree?
+fastTree=$8
+
 
 echo "The region of your interest: chr"$chr":"$start"-"$end". Have fun!"
+echo $refaddress $vcfaddress
+echo $num $raxML $fastTree
 
 mkdir ../../../VCFtoTree_Output_otherSpecies
 
@@ -68,18 +74,24 @@ echo "vcftofasta has run."
 
 ## If use FastTree
 ## If the user need to compile it:
-gcc -DUSE_DOUBLE -O3 -finline-functions -funroll-loops -Wall -o FastTree FastTree.c -lm
-chmod +x Code/FastTree
-Code/FastTree -gtr -gamma -nt ALI_otherAnimals.fa > ALI_otherAnimals.newick &
-wait
+if [ fastTree -eq 1 ]
+then
+    gcc -DUSE_DOUBLE -O3 -finline-functions -funroll-loops -Wall -o FastTree FastTree.c -lm
+    chmod +x Code/FastTree
+    Code/FastTree -gtr -gamma -nt ALI_otherAnimals.fa > ALI_otherAnimals.newick &
+    wait
+fi
 
-## If use RAxML
-python Code/fas2phy.py ALI_otherAnimals.fa ALI_otherAnimals.phy
-chmod +x Code/raxmlHPC-PTHREADS-SSE3
-Code/raxmlHPC-PTHREADS-SSE3 -T 2 -n YourRegion -s ALI_otherAnimals.phy -mGTRGAMMA -p 235 -N 2 &
-wait
-mv RAxML_bestTree.YourRegion RAxML_bestTree.YourRegion.newick &
-wait
+if [ raxML -eq 1 ]
+then
+    ## If use RAxML
+    python Code/fas2phy.py ALI_otherAnimals.fa ALI_otherAnimals.phy
+    chmod +x Code/raxmlHPC-PTHREADS-SSE3
+    Code/raxmlHPC-PTHREADS-SSE3 -T 2 -n YourRegion -s ALI_otherAnimals.phy -mGTRGAMMA -p 235 -N 2 &
+    wait
+    mv RAxML_bestTree.YourRegion RAxML_bestTree.YourRegion.newick &
+    wait
+fi
 
 ## finishing up:
 shopt -s extglob
