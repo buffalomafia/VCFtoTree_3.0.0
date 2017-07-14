@@ -80,8 +80,8 @@ class Frames:
         self.DropDown.pack(side=TOP)
         self.DropDown.yview()
 
-        self.DropDown.insert(1, 'Human (1000 Genome)')
-        self.DropDown.insert(2, 'Human (Custom)')
+        self.DropDown.insert(1, 'Human-1000Genomes')
+        self.DropDown.insert(2, 'Human-Custom')
         self.DropDown.insert(3, 'Neanderthal')
         self.DropDown.insert(4, 'Vindija')
         self.DropDown.insert(5, 'Denisova')
@@ -164,7 +164,7 @@ class Frames:
         self.vcfFile.pack(side=TOP, pady=10)
 
         Label(self.customFrame, text="\n\nNumber of species ", font=('Times', 15), fg='brown').pack(side=TOP)
-        Label(self.customFrame, text="( 0 if 'Human (Custom)' option not selected )", font=('Times', 11), fg='brown').pack(side=TOP)
+        Label(self.customFrame, text="( 0 if 'Human-Custom' option not selected )", font=('Times', 11), fg='brown').pack(side=TOP)
         self.numSpecies = Entry(self.customFrame, textvariable=self.numSpecie)
         self.numSpecies.pack(side=TOP, pady=10)
 
@@ -314,7 +314,7 @@ class Frames:
             print("Selected species:")
             print(self.speciesList2)
             #Both custom and 1000 genome selected so launch customFrame and populationSelection
-            if "Human (1000 Genome)" in self.selectedSpecies and "Human (Custom)" in self.selectedSpecies:
+            if "Human-1000Genomes" in self.selectedSpecies and "Human-Custom" in self.selectedSpecies:
                 print("1000 Genome and custom")
                 self.bothHuman = 1
                 self.previousFrame = self.currentFrame
@@ -325,7 +325,7 @@ class Frames:
 
 
             #Only custom human selected so only launch customFrame, then specFrame
-            elif "Human (Custom)" in self.selectedSpecies:
+            elif "Human-Custom)" in self.selectedSpecies:
                 print("Only selected custom human")
                 print("Launch custom Frame, then specFrame ")
                 self.previousFrame = self.currentFrame
@@ -551,7 +551,7 @@ class Frames:
             #Normal Build Tree Function
             elif self.otherSpecies == 0:
                 os.system('chmod +x Code/buildTree_1click_erica.sh')
-                command = "Code/buildTree_1click_erica.sh %s %s %s %s %s" .format((self.chromosomeOutputs[0]), str(self.chromosomeOutputs[1]), str(self.chromosomeOutputs[2]), self.populationList,self.speciesList2, str(self.customOutputs[3]), str(self.customOutputs[4]))
+                command = "Code/buildTree_1click_erica.sh %s %s %s %s %s %s %s %s %s &" % (str(self.chromosomeOutputs[0]), str(self.chromosomeOutputs[1]), str(self.chromosomeOutputs[2]), self.speciesList2, str(self.customOutputs[1]), str(self.customOutputs[2]), self.populationList, str(self.customOutputs[3]), str(self.customOutputs[4]))
                 os.system(command)
 
                 return
