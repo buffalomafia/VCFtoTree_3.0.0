@@ -1,4 +1,4 @@
-#! /bin/bash 
+#! /bin/bash
 ## using the vcf files and the human refernce genome
 ## obtain the alignment for the any region for individuals from 1000 genomes phase 3.
 
@@ -29,6 +29,10 @@ fastTree=$9
 
 
 echo "The region of your interest: chr"$chr":"$start"-"$end" for 1000 Genomes "$populationlist" population(s). Have fun!"
+echo $specieslist
+
+#folderAdd=$(pwd)
+#echo $folderAdd
 
 mkdir ../../../VCFtoTree_Output
 
@@ -86,8 +90,20 @@ then
         wait
     fi
 
-	shopt -s extglob
-    mv !(VCFtoTree.py|README.md|Code) ../../../VCFtoTree_Output/
+	#shopt -s extglob
+	#shopt -p extglob
+	mkdir ../temp
+	mv Code ../temp
+	mv vcftotree_gui_final.py ../temp
+	mv README.md ../temp
+
+	mv * ../../../VCFtoTree_Output/
+
+	mv ../temp/* .
+	rmdir ../temp
+
+
+    #mv !(Code|vcftotree_gui_final.py|README.md) ../../../VCFtoTree_Output/
 	open ../../../VCFtoTree_Output/
 
 ##Else if other species selected
@@ -101,7 +117,7 @@ else
 	
 
     ##If array contains human-customized
-    if [[ $specieslist == *'Human-customized'* ]]
+    if [[ $specieslist == *'Human-Custom'* ]]
     then
         if [[ $vcfaddress == *"http://"* ]]
         then
@@ -217,8 +233,19 @@ else
     fi
 
 
-	shopt -s extglob
-	mv !(VCFtoTree.py|README.md|Code) ../../../VCFtoTree_Output/
+	#shopt -s extglob
+	#shopt -p extglob
+	#mv !(Code|vcftotree_gui_final.py|README.md) ../../../VCFtoTree_Output/
+
+	mkdir ../temp
+	mv Code ../temp
+	mv vcftotree_gui_final.py ../temp
+	mv README.md ../temp
+
+	mv * ../../../VCFtoTree_Output/
+
+	mv ../temp/* .
+	rmdir ../temp
 	open ../../../VCFtoTree_Output/
 
 	echo "All done, Erica is a genius."
