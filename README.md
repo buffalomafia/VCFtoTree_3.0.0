@@ -3,11 +3,13 @@ Updates:
 - It can now be applied to other species besides human.
 - In human section, you can also add in your customized vcf files, and you can specify the number of individuals in your vcf file.
 - Users can choose whether to build the tree or not, also to build the tree using either [FastTree] or RAxML. (To note that, VCFtoTree v3.0.0 compiles the FastTree with ```-DUSE_DOUBLE``` by default, lifting the hard-coded limit on branch length precision. Please see detail in this [blog].)
+- Vindija Neanderthal can't be used in this version right now due to the fact that the data haven't been published. It will be updated once it is published.
+
 
 [FastTree]:http://www.microbesonline.org/fasttree/
 [blog]:http://darlinglab.org/blog/2015/03/23/not-so-fast-fasttree.html
 
-
+#### APP download site:
 
 
 
