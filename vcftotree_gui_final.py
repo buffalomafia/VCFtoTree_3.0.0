@@ -1,8 +1,11 @@
 from Tkinter import *
 import os
-import sys
-import subprocess
+from sys import exit
+from subprocess import Popen, PIPE, STDOUT
 import threading
+import time
+from multiprocessing import Process
+
 
 
 #This Class is responsible for keeping track of all the frame layouts
@@ -15,7 +18,11 @@ class Frames:
     chromosomeOutputs = ["", "", ""]
     populationList = []
 
+    #To know when process is done running
+    processRunning = 1
 
+    #This will be used for the custom species fram
+    humanSelected = False
 
     def __init__(self, master):
 
@@ -26,6 +33,8 @@ class Frames:
         self.populationSelection = Frame(master)
         self.confPage = Frame(master)
         self.buildPage = Frame(master)
+        self.customHumanFrame = Frame(master)
+        self.donePage = Frame(master)
 
         #TODO: Implemnt this
         self.previousFrame = None
@@ -40,6 +49,8 @@ class Frames:
         #For checkbox values
         self._raxML = 0
         self._FastTree = 0
+
+        self.p1 = None
 
 
 
@@ -67,6 +78,8 @@ class Frames:
         self.otherButton.place(relx=.5, rely=.6, anchor=CENTER)
 
 
+        #For later use
+
 
 
         '''
@@ -89,7 +102,12 @@ class Frames:
         self.DropDown.insert(7, 'Rhesus-macaque')
 
         self.Next = Button(self.speciesSelection, text="Next", font=('Times', 12), fg='brown',command= lambda: speciesSelectionNext(self),borderwidth=4)
-        self.Next.pack(side=RIGHT, pady=45)
+        self.Next.pack(side=RIGHT, pady=15) #TODO: pady=45
+
+        self.Previous = Button(self.speciesSelection, text = "Back", font =('Times', 12), fg='brown', command=lambda: replaceMainScreen(self, self.speciesSelection),borderwidth=4)
+        self.Previous.pack(side=LEFT, pady=15)
+
+
 
 
 
@@ -104,6 +122,7 @@ class Frames:
         self.DropDown2 = Listbox(self.populationSelection, height=5, width=25, selectmode=MULTIPLE, font=('Times', 15), activestyle='none')
         self.DropDown2.pack(side=TOP)
         self.DropDown2.yview()
+        self.DropDown2.configure(bg='white')
 
         self.DropDown2.insert(1, 'ALL')
         self.DropDown2.insert(2, 'ACB')
@@ -142,37 +161,59 @@ class Frames:
 
         '''
         ----------------------------------------------------------------------------------------------------------------
-        Custom Species/ Custom Human
+        Custom Species
         ----------------------------------------------------------------------------------------------------------------
         '''
 
         # Other Species Frame
-
         # Variables for URL, vcf file name, and number of species
-        self.URL = StringVar()
+        self.URL_custom = StringVar()
+        self.vcfFileN_custom = StringVar()
+        self.numSpecie_custom = StringVar()
+
+        # Labels and Entry Boxes
+
+        self.Label1 = Label(self.customFrame, text="\n\nPlease provide the url to the chromosome file you'd like to use.",font=('Times', 15), fg='brown').pack(side=TOP)
+        self.Label2 = Label(self.customFrame, text="e.x. http://hgdownload.soe.ucsc.edu/goldenPath/equCab2/chromosomes/chr3.fa.gz",font=('Times', 11), fg='brown').pack(side=TOP)
+        self.chromosomeURL = Entry(self.customFrame, textvariable=self.URL_custom)
+        self.chromosomeURL.pack(side=TOP, pady=10)
+
+
+        Label(self.customFrame, text='\n\nPlease provide the vcf file name', font=('Times', 15), fg='brown').pack(side=TOP)
+        self.vcfFile_custom = Entry(self.customFrame, textvariable=self.vcfFileN_custom)
+        self.vcfFile_custom.pack(side=TOP, pady=10)
+
+        Label(self.customFrame, text="\n\nNumber of species ", font=('Times', 15), fg='brown').pack(side=TOP)
+        self.numSpecies_custom = Entry(self.customFrame, textvariable=self.numSpecie_custom)
+        self.numSpecies_custom.pack(side=TOP, pady=10)
+
+        # The lambda function is so that I can pass in the argument 'counter'
+        self.Next = Button(self.customFrame, text="Next", font=('Times', 12), fg='brown', command=lambda: customSpeciesNext(self), borderwidth=4).pack(side=RIGHT, pady=45, padx=100)
+        self.Back = Button(self.customFrame, text="Back", font=('Times', 12), fg='brown', command = lambda: replaceMainScreen(self, self.customFrame), borderwidth=4).pack(side=LEFT, pady=45, padx=100)
+
+
+        '''
+        ----------------------------------------------------------------------------------------------------------------
+        Custom Human
+        ----------------------------------------------------------------------------------------------------------------
+        '''
+
         self.vcfFileN = StringVar()
         self.numSpecie = StringVar()
 
-        # Labels and Entry Boxes
-        Label(self.customFrame, text="\n\nPlease provide the url to the chromosome file you'd like to use.",font=('Times', 15), fg='brown').pack(side=TOP)
-        Label(self.customFrame, text="e.x. http://hgdownload.soe.ucsc.edu/goldenPath/equCab2/chromosomes/chr3.fa.gz",font=('Times', 11), fg='brown').pack(side=TOP)
-        self.chromosomeURL = Entry(self.customFrame, textvariable=self.URL)
-        self.chromosomeURL.pack(side=TOP, pady=10)
-
-        Label(self.customFrame, text='\n\nPlease provide the vcf file name', font=('Times', 15), fg='brown').pack(side=TOP)
-        self.vcfFile = Entry(self.customFrame, textvariable=self.vcfFileN)
+        Label(self.customHumanFrame, text='\n\nPlease provide the vcf file name', font=('Times', 15), fg='brown').pack(side=TOP)
+        self.vcfFile = Entry(self.customHumanFrame, textvariable=self.vcfFileN)
         self.vcfFile.pack(side=TOP, pady=10)
 
-        Label(self.customFrame, text="\n\nNumber of species ", font=('Times', 15), fg='brown').pack(side=TOP)
-        Label(self.customFrame, text="( 0 if 'Human-Custom' option not selected )", font=('Times', 11), fg='brown').pack(side=TOP)
-        self.numSpecies = Entry(self.customFrame, textvariable=self.numSpecie)
+        Label(self.customHumanFrame, text="\n\nNumber of species ", font=('Times', 15), fg='brown').pack(side=TOP)
+        self.numSpecies = Entry(self.customHumanFrame, textvariable=self.numSpecie)
         self.numSpecies.pack(side=TOP, pady=10)
 
-        # TODO: Do we need a previous button for this page?
 
         # The lambda function is so that I can pass in the argument 'counter'
-        self.Next = Button(self.customFrame, text="Next", font=('Times', 12), fg='brown', command=lambda: customFrameNext(self, self.bothHuman), borderwidth=4).pack(side=RIGHT, pady=45, padx=100)
-        self.Back = Button(self.customFrame, text="Back", font=('Times', 12), fg='brown', command = lambda: previousFrame(self), borderwidth=4).pack(side=LEFT, pady=45, padx=100)
+        self.Next = Button(self.customHumanFrame, text="Next", font=('Times', 12), fg='brown', command=lambda: customFrameNext(self, self.bothHuman), borderwidth=4).pack(side=RIGHT, pady=45, padx=100)
+        self.Back = Button(self.customHumanFrame, text="Back", font=('Times', 12), fg='brown', command = lambda: previousFrame(self), borderwidth=4).pack(side=LEFT, pady=45, padx=100)
+
 
 
         '''
@@ -218,35 +259,20 @@ class Frames:
 
 
         alignmentLabel = Label(self.confPage,
-                               text="\n\nPlease select an option below if you'd like to \n build a tree with your alignment, otherwise, simply press continue\n\n\n\n\n",
+                               text="\n\nPlease select an option below if you'd like to \n build a tree with your alignment, otherwise, simply press continue. \n\n\n DO NOT EXIT PROGRAM, WAIT FOR PROCESS TO FINISH\n\n\n\n\n",
                                font=('Times', 15), fg='brown').pack(side=TOP)
         self._raxML = IntVar()
         self._FastTree = IntVar()
         c = Checkbutton(self.confPage, text="Build Tree Using RaxML", variable=self._raxML)
         d = Checkbutton(self.confPage, text="Build Tree Using FastTree", variable=self._FastTree)
-        confirm = Button(self.confPage, text="Build", font=('Times', 12), fg='brown',
-                         command= lambda: buildTree(self), borderwidth=4)
+        confirm = Button(self.confPage, text="Continue", font=('Times', 12), fg='brown', command= lambda: buildTree(self), borderwidth=4)
+        back = Button(self.confPage,text="Back", font=('Times',12), fg = 'brown', command = lambda: previousFrame(self), borderwidth = 4)
+        continueButton = Button(self.confPage,text="Continue", font=('Times',12), fg = 'brown', command = lambda: previousFrame(self), borderwidth = 4)
 
         c.pack(side=TOP)
-        d.pack(side=TOP)
+        d.pack(side=TOP, padx=10)
 
         confirm.pack(side=TOP, pady = 30)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -275,13 +301,25 @@ class Frames:
 
             #If Human selected open Species Selection
             if (humanOrOther == "Human"):
+                self.otherSpecies = 0
                 self.currentFrame = self.speciesSelection
                 self.currentFrame.pack()
 
             # If other selected open customFrame
             elif (humanOrOther == "Other"):
+                self.otherSpecies = 1
                 self.currentFrame = self.customFrame
                 self.currentFrame.pack()
+
+        #---------------------------------------------------------------------------------------------------------------
+        def replaceMainScreen(self, frameName):
+
+            frameName.pack_forget()
+            self.mainLabel.place(relx=0.5, rely=.2, anchor=CENTER)
+            self.lineLabel.place(relx=.5, rely=.25, anchor=CENTER)
+            self.questionLabel.place(relx=.5, rely=.3, anchor=CENTER)
+            self.humanButton.place(relx=.5, rely=.5, anchor=CENTER)
+            self.otherButton.place(relx=.5, rely=.6, anchor=CENTER)
 
         #---------------------------------------------------------------------------------------------------------------
         def populationSelectionNext(self):
@@ -318,19 +356,20 @@ class Frames:
                 print("1000 Genome and custom")
                 self.bothHuman = 1
                 self.previousFrame = self.currentFrame
-                self.currentFrame = self.customFrame
-
+                self.currentFrame = self.customHumanFrame
+                self.humanSelected = True
                 self.previousFrame.pack_forget()
                 self.currentFrame.pack()
 
 
             #Only custom human selected so only launch customFrame, then specFrame
-            elif "Human-Custom)" in self.selectedSpecies:
+            elif "Human-Custom" in self.selectedSpecies:
                 print("Only selected custom human")
                 print("Launch custom Frame, then specFrame ")
                 self.previousFrame = self.currentFrame
-                self.currentFrame = self.customFrame
-
+                self.currentFrame = self.customHumanFrame
+                self.humanSelected = True
+                self.bothHuman = 0
                 self.previousFrame.pack_forget()
                 self.currentFrame.pack()
 
@@ -348,24 +387,60 @@ class Frames:
 
         #---------------------------------------------------------------------------------------------------------------
 
+        def customSpeciesNext(self):
+
+            redCount = 0
+
+            if len(self.URL_custom.get()) == 0:
+                self.chromosomeURL.configure(bg = 'tomato')
+                redCount = 1
+
+            if len(self.vcfFileN_custom.get()) == 0:
+                self.vcfFile_custom.configure(bg='tomato')
+                redCount = 1
+
+            if len(self.numSpecie_custom.get()) == 0:
+                self.numSpecies_custom.configure(bg = 'tomato')
+                redCount = 1
+
+            if redCount == 1:
+                return
+
+            self.customOutputs[0] = self.URL_custom.get()
+            self.customOutputs[1] = self.vcfFileN_custom.get()
+            self.customOutputs[2] = (self.numSpecie_custom.get())
+
+
+            print(self.customOutputs)
+
+            if self.customOutputs[3] == '':
+                self.customOutputs[3] = '-'
+            if self.customOutputs[4] == '':
+                self.customOutputs[4] = '-'
+
+            print(self.customOutputs)
+
+
+            self.previousFrame = self.customFrame
+            self.currentFrame = self.specFrame
+            self.previousFrame.pack_forget()
+            self.currentFrame.pack()
+
+        #-----------------------------------------------------------------------------------------------------
+
         #From custom frame to populationSelection or specFrame
         def customFrameNext(self, bothHuman):
 
             #Keep track of unfilled Fields
             redCount = 0
 
-            if (len(self.URL.get())) == 0:
-                print("Missing URL)")
-                self.chromosomeURL.configure(bg='tomato')
-                redCount = 1
-
-            if (len(self.vcfFileN.get())) == 0:
-                print("Missing vcf file name)")
+            if len(self.vcfFileN.get()) == 0:
+                print("Missing VCF")
                 self.vcfFile.configure(bg='tomato')
                 redCount = 1
 
-            if (len(self.numSpecie.get())) == 0:
-                print("Missing URL)")
+            if  len(self.numSpecie.get()) == 0:
+                print("Missing Number of Species")
                 self.numSpecies.configure(bg='tomato')
                 redCount = 1
 
@@ -373,32 +448,33 @@ class Frames:
                 return
 
             # values stored
-            self._URL = self.URL.get()
             self._vcfFileName = self.vcfFileN.get()
             self._numSpecies = int(self.numSpecie.get())
-
             # Store the values so that hey can be used in the script
-            self.customOutputs[0] = self._URL
             self.customOutputs[1] = self._vcfFileName
             self.customOutputs[2] = self._numSpecies
 
             print("Custom Values (not including rax and fastree) : ")
             print(self.customOutputs)
 
-            #If 1000 Genome also selcted go to population selection
-            if bothHuman == 1:
+
+            #If only custom, go only to
+            if bothHuman == 0:
+
+
                 print("Launching populationSelection")
-                self.previousFrame = self.currentFrame
-                self.currentFrame = self.populationSelection
+                self.previousFrame = self.customHumanFrame
+                self.currentFrame = self.specFrame
 
                 self.previousFrame.pack_forget()
                 self.currentFrame.pack()
 
             #Otherwise go to specFrame
-            elif bothHuman == 0:
+            elif bothHuman == 1:
+
                 print("launching specFrame")
-                self.previousFrame = self.currentFrame
-                self.currentFrame = self.specFrame
+                self.previousFrame = self.customHumanFrame
+                self.currentFrame = self.populationSelection
 
                 self.previousFrame.pack_forget()
                 self.currentFrame.pack()
@@ -467,7 +543,7 @@ class Frames:
 
                         # print cnum, str(indel_chr), indel_start, int(rStart)
                         if indel_start >= int(rStart) and indel_start <= int(rEnd):
-                            print cnum, str(indel_chr), indel_start, int(rStart), int(rEnd)
+                            print( cnum, str(indel_chr), indel_start, int(rStart), int(rEnd))
                             self.warningLabel1 = Label(self.confPage,
                                                        text="\n WARNING: Your selected region contains complex indels, \n this may effect the tree.",
                                                        font=('Times', 12), fg='red')
@@ -475,16 +551,23 @@ class Frames:
 
                         # TYPO, here should be >=, I guess I did this wrong from the beginning.
                         elif indel_end >= int(rStart) and indel_end <= int(rEnd):
-                            print cnum, str(indel_chr), indel_end, int(rStart), int(rEnd)
+                            print( cnum, str(indel_chr), indel_end, int(rStart), int(rEnd))
                             self.warningLabel2 = Label(self.confPage,
                                                        text="\n WARNING: Your selected region contains complex indels, \n this may effect the tree.",
                                                        font=('Times', 12), fg='red')
                             self.warningLabel2.pack(side=TOP)
             except:
-                self.setRed(self.c, self.c_num)
-                self.setRed(self.rS, self.r_Start)
-                self.setRed(self.rE, self.r_End)
-                return
+                print("fine")
+                #TODO:Uncomment
+                if len(self.c.get()) == 0:
+                    self.c_num.configure(bg='tomato')
+
+                if len(self.rS.get()) == 0:
+                    self.r_start.configure(bg='tomato')
+
+                if len(self.rE.get()) == 0:
+                    self.r_End.configure(bg='tomato')
+
 
             print("Chromosome Values: ")
             print(self.chromosomeOutputs)
@@ -517,14 +600,27 @@ class Frames:
         #---------------------------------------------------------------------------------------------------------------
         def buildTree(self):
 
+
             #Get checkbox values
             self.customOutputs[3] = self._raxML.get()
             self.customOutputs[4] = self._FastTree.get()
+
+            self.confPage.pack_forget()
+            self.DoneLabel = Label(master, text="\n\n\n\n\n\n\n\n\nProcess Complete!\n\n",
+                                   font=('Times', 20),
+                                   fg='brown').pack(side=TOP)
 
             print("\n\n------------------ Final Outputs ------------------------\n\n")
 
             print("Ref Address, VCF Address, #Species, RaxML, FastTree")
             print(self.customOutputs)
+
+            if self.customOutputs[0] == '':
+                self.customOutputs[0] = '-'
+            if self.customOutputs[1] == '':
+                self.customOutputs[1] = '-'
+            if self.customOutputs[2] == '':
+                self.customOutputs[2] = '-'
 
             print("\nChromosome Number, Start, End")
             print(self.chromosomeOutputs)
@@ -535,10 +631,22 @@ class Frames:
             print("\nPopulation List: ")
             print(self.populationList)
 
+            print("HumanOrOther: ")
+            print(self.otherSpecies)
+
             print("\n---------------------------------------------------------\n\n")
+
+
+            #progressbar = ttk.Progressbar(master, orient=HORIZONTAL, length=200, mode='indeterminate')
+            #progressbar.pack(side="top")
+            #progressbar.start()
+
+
 
             #If other species was selected
             if self.otherSpecies == 1:
+
+
                 print("build tree for other species called")
 
                 os.system('chmod +x Code/otheranimals.sh')
@@ -546,15 +654,36 @@ class Frames:
                 str(self.customOutputs[0]), str(self.customOutputs[1]), str(self.chromosomeOutputs[0]), str(self.chromosomeOutputs[1]),
                 str(self.chromosomeOutputs[2]), str(self.customOutputs[2]), str(self.customOutputs[3]), str(self.customOutputs[4])))
 
+                #runScript()
+                #p1 = Process(target=runScript)
+                #p1.start()
+
+
+
+
                 return
 
             #Normal Build Tree Function
             elif self.otherSpecies == 0:
+
                 os.system('chmod +x Code/buildTree_1click_erica.sh')
-                command = "Code/buildTree_1click_erica.sh %s %s %s %s %s %s %s %s %s &" % (str(self.chromosomeOutputs[0]), str(self.chromosomeOutputs[1]), str(self.chromosomeOutputs[2]), self.speciesList2, str(self.customOutputs[1]), str(self.customOutputs[2]), self.populationList, str(self.customOutputs[3]), str(self.customOutputs[4]))
+                command = "Code/buildTree_1click_erica.sh %s %s %s %s %s %s %s %s %s &" % (str(self.chromosomeOutputs[0]), str(self.chromosomeOutputs[1]), str(self.chromosomeOutputs[2]), self.speciesList2, str(self.customOutputs[1]), str(self.customOutputs[2]), self.populationList2, str(self.customOutputs[3]), str(self.customOutputs[4]))
                 os.system(command)
 
                 return
+
+        def swapMessage(message):
+
+
+            if message == 0:
+               self.donePage.pack()
+
+            elif message == 1:
+                exit(0)
+
+
+
+
 
     #END CLASS DEFINITION
 
