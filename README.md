@@ -5,11 +5,16 @@ Updates:
 - Users can choose whether to build the tree or not, also to build the tree using either [FastTree] or RAxML. (To note that, VCFtoTree v3.0.0 compiles the FastTree with ```-DUSE_DOUBLE``` by default, lifting the hard-coded limit on branch length precision. Please see detail in this [blog].)
 - Vindija Neanderthal can't be used in this version right now due to the fact that the data haven't been published. It will be updated once it is published.
 
+- To use the functioal of "other species" and "customized human", if your customized vcf file or reference are from a local address, please enter the full address of the file.
+- For customized vcf file and reference file, please use the compressed version of them as in "***.fa.gz" or "***.vcf.gz", the program will index them for you.
+- To enter the URL of your customized file, please use the URL begins with "http://".
+
 
 [FastTree]:http://www.microbesonline.org/fasttree/
 [blog]:http://darlinglab.org/blog/2015/03/23/not-so-fast-fasttree.html
 
 #### APP download site:
+https://www.dropbox.com/sh/sewjxmh9207fp89/AAASfUGqMBtd2_HO3CR7XA3ha?dl=0
 
 
 

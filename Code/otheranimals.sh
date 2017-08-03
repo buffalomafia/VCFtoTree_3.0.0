@@ -36,9 +36,12 @@ mkdir ../../../VCFtoTree_Output_otherSpecies
 ## prepare reference sequence for your chosen chromosome
 if [[ $refaddress == *"http://"* ]]
 then
-    /usr/local/bin/wget $refaddress > chr$chr.fa.gz
+    /usr/local/bin/wget $refaddress
+    filenameFaGz=$(basename "$refaddress")
+    mv $filenameFaGz chr$chr.fa.gz
+
 else
-    mv $refaddress > chr$chr.fa.gz
+    mv $refaddress chr$chr.fa.gz
 fi
 
 gunzip -c chr$chr.fa.gz > chr$chr.fa
@@ -50,9 +53,11 @@ ref=REF_chr$chr.START$start.END$end.fa
 ## prepare vcf file for the given region
 if [[ $vcfaddress == *"http://"* ]]
 then
-    /usr/local/bin/wget $vcfaddress > chr$chr.vcf.gz
+    /usr/local/bin/wget $vcfaddress
+    filenameVcfGa=$(basename "$vcfaddress")
+    mv $filenameVcfGa chr$chr.vcf.gz
 else
-    mv $vcfaddress > chr$chr.vcf.gz
+    mv $vcfaddress chr$chr.vcf.gz
 fi
 
 /usr/local/bin/tabix -h -f chr$chr.vcf.gz

@@ -29,6 +29,7 @@ fastTree=$9
 
 
 echo "The region of your interest: chr"$chr":"$start"-"$end" for 1000 Genomes "$populationlist" population(s). Have fun!"
+echo $populationlist
 echo $specieslist
 
 #folderAdd=$(pwd)
@@ -121,9 +122,11 @@ else
     then
         if [[ $vcfaddress == *"http://"* ]]
         then
-            /usr/local/bin/wget $vcfaddress > customized_human_chr$chr.vcf.gz
+            /usr/local/bin/wget $vcfaddress
+            filenameVcfGz=$(basename "$vcfaddress")
+            mv $filenameVcfGz customized_human_chr$chr.vcf.gz
         else
-            mv $vcfaddress > customized_human_chr$chr.vcf.gz
+            mv $vcfaddress customized_human_chr$chr.vcf.gz
         fi
 
         /usr/local/bin/tabix -h -f customized_human_chr$chr.vcf.gz
@@ -214,7 +217,7 @@ else
     ## If the user need to compile it:
     if [ $fastTree -eq 1 ]
     then
-        gcc -DUSE_DOUBLE -O3 -finline-functions -funroll-loops -Wall -o FastTree FastTree.c -lm
+        gcc -DUSE_DOUBLE -O3 -finline-functions -funroll-loops -Wall -o Code/FastTree Code/FastTree.c -lm
         chmod +x Code/FastTree
         Code/FastTree -gtr -gamma -nt ALI_final.fa > FastTree_ALI_final.newick &
         wait
