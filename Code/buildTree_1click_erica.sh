@@ -241,6 +241,12 @@ else
 	mv Code ../temp
 	mv vcftotree_gui_final.py ../temp
 	mv README.md ../temp
+	mv __boot__.py ../temp
+	mv __error__.sh ../temp
+	mv cabernet.icns ../temp
+	mv include ../temp
+	mv lib ../temp
+	mv site.pyc ../temp
 
 	mv * ../../../VCFtoTree_Output/
 
