@@ -3,7 +3,7 @@ Updates:
 - Fix the issue for other species that their vcf files has 'INFO' part empty.
 
 #### APP download site:
-https://www.dropbox.com/s/uubqyifihlujk39/VCFtoTree_v3.0.1.dmg?dl=0
+https://www.dropbox.com/sh/sewjxmh9207fp89/AAASfUGqMBtd2_HO3CR7XA3ha?dl=0
 
 
 # VCFtoTree v3.0.0
