@@ -355,7 +355,7 @@ while n <= 2504:  # phase3 2504, phase1 1092
 
     for p in locList:
         haplotype1.append(dic_psn1_sorted[str(p)+'_1'])
-    for q in dic_psn2_sorted:
+    for q in locList:
         haplotype2.append(dic_psn2_sorted[str(q)])
     all_haplo[id[n + 8] + '.1'] = ''.join(haplotype1)
     all_haplo[id[n + 8] + '.2'] = ''.join(haplotype2)
