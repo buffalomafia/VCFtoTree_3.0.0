@@ -145,106 +145,111 @@ for l in input_temp:
     gt0 = []
     gt0 = l.split('\t')
 
-    info0 = gt0[7].split(';')
-    for x in info0:
-        if x.startswith('VT='):
-            vt = x
-            if vt == 'VT=SV':
-                error.write(l + '\n')
-            elif vt == 'VT=SNP,INDEL':
-                if not any(',' in gt0[4] for c0 in gt0[4]):
-                    delta = len(gt0[3]) - len(gt0[4])
-                    if delta > 0:
-                        gt0[4] = gt0[4] + delta * '-'
-                        l = '\t'.join(gt0)
-                        input2.append(l)
-                        error.write(l + '\n')
-                    elif delta < 0:
-                        gt0[3] = gt0[3] + (-delta * '-')
-                        l = '\t'.join(gt0)
-                        input2.append(l)
-                        error.write(l + '\n')
-                else:
-                    alter0 = gt0[4].split(',')
-                    num_alter = len(alter0)
-                    if num_alter == 2:
-                        max_len = max(len(gt0[3]), len(alter0[0]), len(alter0[1]))
-                        delta_0 = max_len - len(gt0[3])
-                        delta_1 = max_len - len(alter0[0])
-                        delta_2 = max_len - len(alter0[1])
-                        gt0[3] = gt0[3] + delta_0 * '-'
-                        gt0[4] = alter0[0] + delta_1 * '-' + ',' + alter0[1] + delta_2 * '-'
-                        l = '\t'.join(gt0)
-                        input2.append(l)
-                        error.write(l + '\n')
-                    elif num_alter == 3:
-                        max_len = max(len(gt0[3]), len(alter0[0]), len(alter0[1]), len(alter0[2]))
-                        delta_0 = max_len - len(gt0[3])
-                        delta_1 = max_len - len(alter0[0])
-                        delta_2 = max_len - len(alter0[1])
-                        delta_3 = max_len - len(alter0[2])
-                        gt0[3] = gt0[3] + delta_0 * '-'
-                        gt0[4] = alter0[0] + delta_1 * '-' + ',' + alter0[1] + delta_2 * '-' + ',' + alter0[
-                            2] + delta_3 * '-'
-                        l = '\t'.join(gt0)
-                        input2.append(l)
-                        error.write(l + '\n')
-                    else:
-                        print alter0
-                        print "Please go to find Erica..."
-
-            elif vt == 'VT=INDEL':
-                if not any(',' in gt0[4] for c0 in gt0[4]):
-                    delta = len(gt0[3]) - len(gt0[4])  # gt[3] is REF, gt[4] is ALT
-                    if delta > 0:
-                        gt0[4] = gt0[4] + delta * '-'
-                        l = '\t'.join(gt0)
-                        input2.append(l)
-                        error.write(l + '\n')
-                    elif delta < 0:
-                        gt0[3] = gt0[3] + (-delta * '-')
-                        l = '\t'.join(gt0)
-                        input2.append(l)
-                        error.write(l + '\n')
-                else:
-                    alter0 = gt0[4].split(',')
-                    indel_cnt = len(alter0)
-                    if indel_cnt == 2:
-                        max_len = max(len(gt0[3]), len(alter0[0]), len(alter0[1]))
-                        delta_0 = max_len - len(gt0[3])
-                        delta_1 = max_len - len(alter0[0])
-                        delta_2 = max_len - len(alter0[1])
-                        gt0[3] = gt0[3] + delta_0 * '-'
-                        gt0[4] = alter0[0] + delta_1 * '-' + ',' + alter0[1] + delta_2 * '-'
-                    elif indel_cnt == 3:
-                        max_len = max(len(gt0[3]), len(alter0[0]), len(alter0[1]), len(alter0[2]))
-                        delta_0 = max_len - len(gt0[3])
-                        delta_1 = max_len - len(alter0[0])
-                        delta_2 = max_len - len(alter0[1])
-                        delta_3 = max_len - len(alter0[2])
-                        gt0[3] = gt0[3] + delta_0 * '-'
-                        gt0[4] = alter0[0] + delta_1 * '-' + ',' + alter0[1] + delta_2 * '-' + ',' + alter0[
-                            2] + delta_3 * '-'
-                    elif indel_cnt == 4:
-                        max_len = max(len(gt0[3]), len(alter0[0]), len(alter0[1]), len(alter0[2]), len(alter0[3]))
-                        delta_0 = max_len - len(gt0[3])
-                        delta_1 = max_len - len(alter0[0])
-                        delta_2 = max_len - len(alter0[1])
-                        delta_3 = max_len - len(alter0[2])
-                        delta_4 = max_len - len(alter0[3])
-                        gt0[3] = gt0[3] + delta_0 * '-'
-                        gt0[4] = alter0[0] + delta_1 * '-' + ',' + alter0[1] + delta_2 * '-' + ',' + alter0[
-                            2] + delta_3 * '-' + ',' + alter0[3] + delta_4 * '-'
-
-                    l = '\t'.join(gt0)
-                    input2.append(l)
+    if gt0[7] == '.':
+        input2.append(l)
+    else:
+        info0 = gt0[7].split(';')
+        for x in info0:
+            if x.startswith('VT='):
+                vt = x
+                if vt == 'VT=SV':
                     error.write(l + '\n')
-            elif vt == 'VT=SNP':
-                input2.append(l)
-            else:
-                print vt
-                print "Please go to find Erica..."
+                elif vt == 'VT=SNP,INDEL':
+                    if not any(',' in gt0[4] for c0 in gt0[4]):
+                        delta = len(gt0[3]) - len(gt0[4])
+                        if delta > 0:
+                            gt0[4] = gt0[4] + delta * '-'
+                            l = '\t'.join(gt0)
+                            input2.append(l)
+                            error.write(l + '\n')
+                        elif delta < 0:
+                            gt0[3] = gt0[3] + (-delta * '-')
+                            l = '\t'.join(gt0)
+                            input2.append(l)
+                            error.write(l + '\n')
+                    else:
+                        alter0 = gt0[4].split(',')
+                        num_alter = len(alter0)
+                        if num_alter == 2:
+                            max_len = max(len(gt0[3]), len(alter0[0]), len(alter0[1]))
+                            delta_0 = max_len - len(gt0[3])
+                            delta_1 = max_len - len(alter0[0])
+                            delta_2 = max_len - len(alter0[1])
+                            gt0[3] = gt0[3] + delta_0 * '-'
+                            gt0[4] = alter0[0] + delta_1 * '-' + ',' + alter0[1] + delta_2 * '-'
+                            l = '\t'.join(gt0)
+                            input2.append(l)
+                            error.write(l + '\n')
+                        elif num_alter == 3:
+                            max_len = max(len(gt0[3]), len(alter0[0]), len(alter0[1]), len(alter0[2]))
+                            delta_0 = max_len - len(gt0[3])
+                            delta_1 = max_len - len(alter0[0])
+                            delta_2 = max_len - len(alter0[1])
+                            delta_3 = max_len - len(alter0[2])
+                            gt0[3] = gt0[3] + delta_0 * '-'
+                            gt0[4] = alter0[0] + delta_1 * '-' + ',' + alter0[1] + delta_2 * '-' + ',' + alter0[
+                                2] + delta_3 * '-'
+                            l = '\t'.join(gt0)
+                            input2.append(l)
+                            error.write(l + '\n')
+                        else:
+                            print alter0
+                            print "Please go to find Erica..."
+
+                elif vt == 'VT=INDEL':
+                    if not any(',' in gt0[4] for c0 in gt0[4]):
+                        delta = len(gt0[3]) - len(gt0[4])  # gt[3] is REF, gt[4] is ALT
+                        if delta > 0:
+                            gt0[4] = gt0[4] + delta * '-'
+                            l = '\t'.join(gt0)
+                            input2.append(l)
+                            error.write(l + '\n')
+                        elif delta < 0:
+                            gt0[3] = gt0[3] + (-delta * '-')
+                            l = '\t'.join(gt0)
+                            input2.append(l)
+                            error.write(l + '\n')
+                    else:
+                        alter0 = gt0[4].split(',')
+                        indel_cnt = len(alter0)
+                        if indel_cnt == 2:
+                            max_len = max(len(gt0[3]), len(alter0[0]), len(alter0[1]))
+                            delta_0 = max_len - len(gt0[3])
+                            delta_1 = max_len - len(alter0[0])
+                            delta_2 = max_len - len(alter0[1])
+                            gt0[3] = gt0[3] + delta_0 * '-'
+                            gt0[4] = alter0[0] + delta_1 * '-' + ',' + alter0[1] + delta_2 * '-'
+                        elif indel_cnt == 3:
+                            max_len = max(len(gt0[3]), len(alter0[0]), len(alter0[1]), len(alter0[2]))
+                            delta_0 = max_len - len(gt0[3])
+                            delta_1 = max_len - len(alter0[0])
+                            delta_2 = max_len - len(alter0[1])
+                            delta_3 = max_len - len(alter0[2])
+                            gt0[3] = gt0[3] + delta_0 * '-'
+                            gt0[4] = alter0[0] + delta_1 * '-' + ',' + alter0[1] + delta_2 * '-' + ',' + alter0[
+                                2] + delta_3 * '-'
+                        elif indel_cnt == 4:
+                            max_len = max(len(gt0[3]), len(alter0[0]), len(alter0[1]), len(alter0[2]), len(alter0[3]))
+                            delta_0 = max_len - len(gt0[3])
+                            delta_1 = max_len - len(alter0[0])
+                            delta_2 = max_len - len(alter0[1])
+                            delta_3 = max_len - len(alter0[2])
+                            delta_4 = max_len - len(alter0[3])
+                            gt0[3] = gt0[3] + delta_0 * '-'
+                            gt0[4] = alter0[0] + delta_1 * '-' + ',' + alter0[1] + delta_2 * '-' + ',' + alter0[
+                                2] + delta_3 * '-' + ',' + alter0[3] + delta_4 * '-'
+
+                        l = '\t'.join(gt0)
+                        input2.append(l)
+                        error.write(l + '\n')
+                elif vt == 'VT=SNP':
+                    input2.append(l)
+                else:
+                    print vt
+                    print "Please go to find Erica..."
 error.close()
+
+# print len(input2)
 
 n = 1
 while n <= numSpecies:  # phase3 2504, phase1 1092, num of species if using other vcf file
@@ -254,13 +259,15 @@ while n <= numSpecies:  # phase3 2504, phase1 1092, num of species if using othe
     # dic_psn1 = ref_bs  # {}  # variation/sequence dictionary for each individual, initial value is same as ref_bs
     dic_psn2 = ref_bs  # everyone has two dic for two haplotypes respectably
     for k1 in ref_bs.keys():  # .keys() would introduce a iteration
-        dic_psn1[k1 + '_1'] = ref_bs[k1]
+        # dic_psn1[k1 + '_1'] = ref_bs[k1]
+        dic_psn1[k1] = ref_bs[k1]
     for line in input2:
         gt = []
         gt = line.split('\t')
         pos = gt[1]  # position is gt[1]
 
         if any(',' in gt[4] for c in gt[4]):
+            # print gt[3], gt[4]
             alter = gt[4].split(',')
             if gt[8 + n][0] == '0':
                 gt1 = gt[3]
@@ -284,12 +291,14 @@ while n <= numSpecies:  # phase3 2504, phase1 1092, num of species if using othe
             elif gt[8 + n][2] == '4':
                 gt2 = alter[3]
         else:
+
             if gt[8 + n][0:3] == '0|0':
                 gt1 = gt[3]
                 gt2 = gt[3]
             elif gt[8 + n][0:3] == '1|0':
                 gt1 = gt[4]
                 gt2 = gt[3]
+                # print gt1,gt2
             elif gt[8 + n][0:3] == '0|1':
                 gt1 = gt[3]
                 gt2 = gt[4]
@@ -313,17 +322,20 @@ while n <= numSpecies:  # phase3 2504, phase1 1092, num of species if using othe
             if not '-' in gt[3]:
                 len_ref = len(gt[3])
                 for pos_key in range(int(pos), int(pos) + len_ref):
-                    dic_psn1[str(pos_key) + '_1'] = gt1[pos_key - int(pos)]
+                    # dic_psn1[str(pos_key) + '_1'] = gt1[pos_key - int(pos)]
+                    dic_psn1[str(pos_key)] = gt1[pos_key - int(pos)]
                     dic_psn2[str(pos_key)] = gt2[pos_key - int(pos)]
             elif gt[3][1] == '-':
-                dic_psn1[pos + '_1'] = gt1
+                # dic_psn1[pos + '_1'] = gt1
+                dic_psn1[pos] = gt1
                 dic_psn2[pos] = gt2
             else:
                 gap_cnt = gt[3].count('-')
                 bp_cnt = len(gt[3]) - gap_cnt
                 # print gap_cnt, bp_cnt
                 for pos_key in range(int(pos), int(pos) + bp_cnt):
-                    dic_psn1[str(pos_key) + '_1'] = gt1[pos_key - int(pos)]
+                    # dic_psn1[str(pos_key) + '_1'] = gt1[pos_key - int(pos)]
+                    dic_psn1[str(pos_key)] = gt1[pos_key - int(pos)]
                     dic_psn2[str(pos_key)] = gt2[pos_key - int(pos)]
 
                 gt1_makeup = []
@@ -331,10 +343,12 @@ while n <= numSpecies:  # phase3 2504, phase1 1092, num of species if using othe
                 gt1_makeup = gt1[bp_cnt - 1:]
                 gt2_makeup = gt2[bp_cnt - 1:]
                 target_loc = str(int(pos) + bp_cnt - 1)
-                dic_psn1[target_loc + '_1'] = gt1_makeup
+                # dic_psn1[target_loc + '_1'] = gt1_makeup
+                dic_psn1[target_loc] = gt1_makeup
                 dic_psn2[target_loc] = gt2_makeup
         else:
-            dic_psn1[pos + '_1'] = gt1
+            # dic_psn1[pos + '_1'] = gt1
+            dic_psn1[pos] = gt1
             dic_psn2[pos] = gt2
 
             # if pos == '171117899' and n ==1:
@@ -345,12 +359,22 @@ while n <= numSpecies:  # phase3 2504, phase1 1092, num of species if using othe
 
     haplotype1 = []
     haplotype2 = []
+
+    locList = []
+    for eachLoc in dic_psn1.keys():
+        locList.append(int(eachLoc))
+
+    locList = sorted(locList)
     dic_psn1_sorted = collections.OrderedDict(sorted(dic_psn1.items()))
     dic_psn2_sorted = collections.OrderedDict(sorted(dic_psn2.items()))
-    for p in dic_psn1_sorted:
-        haplotype1.append(dic_psn1_sorted[p])
-    for q in dic_psn2_sorted:
-        haplotype2.append(dic_psn2_sorted[q])
+    # print locList
+
+
+    for p in locList:
+        haplotype1.append(dic_psn1_sorted[str(p)])
+    for q in locList:
+        haplotype2.append(dic_psn2_sorted[str(q)])
+
     all_haplo[id[n + 8] + '.1'] = ''.join(haplotype1)
     all_haplo[id[n + 8] + '.2'] = ''.join(haplotype2)
     n += 1
