@@ -1,3 +1,8 @@
+# VCFtoTree v3.0.1
+Updates:
+- Fix the issue for other species that their vcf files has 'INFO' part empty.
+
+
 # VCFtoTree v3.0.0
 Updates:
 - It can now be applied to other species besides human.
